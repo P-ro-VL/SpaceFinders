@@ -1,19 +1,24 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:spacefinder/presentation/home/home_page.dart';
 import 'package:spacefinder/presentation/lead/detail/lead_detail_page_c.dart';
 import 'package:spacefinder/presentation/lead/detail/lead_detail_property_section.dart';
+import 'package:spacefinder/utils/random_picker.dart';
 
 import '../../../domain/entity/lead_entity.dart';
 import '../../../l10n/app_l18.dart';
+import '../../../routes.dart';
+import '../../listing/demand_listing_item.dart';
+import '../../listing/listing_item.dart';
 import 'lead_detail_contact_w.dart';
 import 'lead_detail_image_section.dart';
 
 class LeadDetailPage extends StatefulWidget {
-  const LeadDetailPage({super.key, required this.lead});
+  const LeadDetailPage(
+      {super.key, required this.lead, required this.relatingLeads});
 
   final LeadEntity lead;
+  final List<LeadEntity> relatingLeads;
 
   @override
   State<LeadDetailPage> createState() => _LeadDetailPageState();
@@ -113,13 +118,6 @@ class _LeadDetailPageState extends State<LeadDetailPage> {
                             )),
                       },
                       const SizedBox(height: 24),
-                      Text(Ln.i?.leadIrelatedLead ?? '',
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff1C2B38),
-                          )),
-                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -129,6 +127,41 @@ class _LeadDetailPageState extends State<LeadDetailPage> {
                 lead: widget.lead,
               ),
             ],
+          ),
+          Text(Ln.i?.leadIrelatedLead ?? '',
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff1C2B38),
+              )),
+          const SizedBox(height: 24),
+          Wrap(
+            runAlignment: WrapAlignment.center,
+            alignment: WrapAlignment.start,
+            runSpacing: 32,
+            spacing: 32,
+            children: widget.relatingLeads.isEmpty
+                ? [
+                    const Center(
+                      child: Text('Không có kết quả phù hợp'),
+                    )
+                  ]
+                : widget.relatingLeads
+                    .map((e) => GestureDetector(
+                          onTap: () {
+                            Routes.goTo(HomePage());
+                            Future.delayed(Duration(seconds: 1), () {
+                              Routes.goTo(LeadDetailPage(
+                                  lead: e,
+                                  relatingLeads:
+                                      widget.relatingLeads.pickRandomItems(5)));
+                            });
+                          },
+                          child: e.isDesired
+                              ? DemandListingItem(lead: e)
+                              : LeadListingItem(lead: e),
+                        ))
+                    .toList(),
           ),
         ],
       ),

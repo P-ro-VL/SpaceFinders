@@ -3,19 +3,21 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:spacefinder/auth/authentication_c.dart';
 import 'package:spacefinder/common.dart';
 import 'package:spacefinder/domain/entity/contract_entity.dart';
 import 'package:spacefinder/presentation/contract/detail_contract_popup_w.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ContractTableDataSource extends DataGridSource {
   ContractTableDataSource({required List<ContractEntity> contracts}) {
     data = contracts
-        .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<num>(columnName: 'id', value: e.contractId ?? -1),
+        .mapIndexed<DataGridRow>((index, e) => DataGridRow(cells: [
+              DataGridCell<num>(columnName: 'id', value: index + 1),
               DataGridCell<String>(columnName: 'code', value: e.code ?? '--'),
               DataGridCell<String>(
                   columnName: 'agent_name', value: e.agentName ?? '--'),
@@ -54,7 +56,15 @@ class ContractTableDataSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
+        cells: row.getCells().mapIndexed<Widget>((index, e) {
+      if (e.columnName == 'id') {
+        return Center(
+          child: Text(
+            e.value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }
       if (e.columnName == 'status') {
         return Container(
           height: 30,
@@ -77,8 +87,11 @@ class ContractTableDataSource extends DataGridSource {
       }
       if (e.columnName == 'file') {
         return GestureDetector(
-          onTap: () {
-            launchUrlString(e.value);
+          onTap: () async {
+            final url = Supabase.instance.client.storage
+                .from('spacefinder-cdn')
+                .getPublicUrl(e.value.replaceAll("spacefinder-cdn/", ""));
+            launchUrlString(url);
           },
           child: Icon(
             Icons.file_present_rounded,
@@ -100,8 +113,8 @@ class ContractTableDataSource extends DataGridSource {
 
   @override
   Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * 10;
-    int endIndex = startIndex + 10;
+    int startIndex = newPageIndex * 4;
+    int endIndex = startIndex + 4;
     if (startIndex < data.length) {
       paging = data
           .getRange(startIndex, min(endIndex, data.length))

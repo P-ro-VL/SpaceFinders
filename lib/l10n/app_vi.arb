@@ -91,6 +91,7 @@
     "leadIcreateRequest": "Tạo yêu cầu",
     "leadIaddress": "Địa chỉ BĐS",
     "leadIdetailLead": "Chi tiết tin đăng BĐS",
+    "leadIsearchByCode": "Tìm kiếm bằng mã tin đăng",
     "contractImanagement": "Quản lý hợp đồng thuê Bất Động Sản",
     "contractIcreate": "Tạo hợp đồng",
     "contractIpending": "Đang xử lý",

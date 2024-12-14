@@ -96,7 +96,10 @@ class RequestManagementDataSource extends DataGridSource {
       if (e.columnName == 'leadCode') {
         return GestureDetector(
           onTap: () {
-            Routes.goTo(LeadDetailPage(lead: e.value));
+            Routes.goTo(LeadDetailPage(
+              lead: e.value,
+              relatingLeads: [],
+            ));
           },
           child: Center(
             child: Text(e.value?.code ?? '--',
@@ -200,106 +203,100 @@ class RequestManagementDataSource extends DataGridSource {
         builder: (_) => AlertDialog(
               contentPadding: EdgeInsets.zero,
               content: Container(
-                width: 500,
-                height: 300,
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        isReject ? 'Từ chối duyệt' : 'Xác nhận duyệt',
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.all(32),
+                height: 500,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      isReject ? 'Từ chối duyệt' : 'Xác nhận duyệt',
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                        'Bạn có chắc chắn muốn ${isReject ? 'từ chối duyệt' : 'duyệt'} mục này? Hành động này không thể hoàn tác.'),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    const Text('Ghi chú'),
+                    SizedBox(
+                      height: 100,
+                      child: TextField(
+                        controller: noteController,
+                        decoration:
+                            InputDecoration(border: OutlineInputBorder()),
                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                          'Bạn có chắc chắn muốn ${isReject ? 'từ chối duyệt' : 'duyệt'} mục này? Hành động này không thể hoàn tác.'),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      const Text('Ghi chú'),
-                      SizedBox(
-                        height: 100,
-                        child: TextField(
-                          controller: noteController,
-                          decoration:
-                              InputDecoration(border: OutlineInputBorder()),
+                    ).paddingSymmetric(horizontal: 8),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.back();
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.blue)),
+                              child: const Center(
+                                child: Text(
+                                  'Huỷ',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ).paddingSymmetric(horizontal: 8),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.blue)),
-                                  child: const Center(
-                                    child: Text(
-                                      'Huỷ',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () async {
-                                Get.back();
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              Get.back();
 
-                                final controller =
-                                    Get.find<RequestManagementPageController>();
-                                await controller.updateRequestStatus(
-                                    requestEntity.requestId ?? -1,
-                                    isReject ? 'REJECTED' : 'APPROVED',
-                                    noteController.text,
-                                    Get.find<AuthenticationController>()
-                                            .user
-                                            .value
-                                            ?.userId ??
-                                        -1);
-                              },
-                              child: Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.blue),
-                                  child: const Center(
-                                    child: Text(
-                                      'Xác nhận',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
+                              final controller =
+                                  Get.find<RequestManagementPageController>();
+                              await controller.updateRequestStatus(
+                                  requestEntity,
+                                  isReject ? 'REJECTED' : 'APPROVED',
+                                  noteController.text,
+                                  Get.find<AuthenticationController>()
+                                          .user
+                                          .value
+                                          ?.userId ??
+                                      -1);
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.blue),
+                              child: const Center(
+                                child: Text(
+                                  'Xác nhận',
+                                  style: TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
                           ),
-                        ],
-                      )
-                    ],
-                  ).paddingAll(8),
-                ),
+                        ),
+                      ],
+                    )
+                  ],
+                ).paddingAll(8),
               ),
             ));
   }

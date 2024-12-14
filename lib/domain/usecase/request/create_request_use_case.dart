@@ -53,6 +53,8 @@ class CreateRequestParams {
       'reviewed_by': reviewedBy,
       'review_note': reviewNote,
       'evidence_file': evidenceFile,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
     };
   }
 }

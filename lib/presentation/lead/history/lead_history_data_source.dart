@@ -32,7 +32,7 @@ class LeadHistoryDataSource extends DataGridSource {
                   columnName: 'price',
                   value: (e.price?.toString() ?? '--') == '-1'
                       ? 'Thoả thuận'
-                      : e.price?.toString()),
+                      : (e.price ?? 0).currencyFormat),
               DataGridCell<String>(
                   columnName: 'area', value: e.area?.toString() ?? '--'),
               DataGridCell<String>(

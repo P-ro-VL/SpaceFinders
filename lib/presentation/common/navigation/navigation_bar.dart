@@ -11,6 +11,7 @@ import 'package:spacefinder/presentation/lead/create/create_lead_layout.dart';
 import 'package:spacefinder/presentation/lead/history/lead_history_page.dart';
 import 'package:spacefinder/presentation/listing/listing_page.dart';
 import 'package:spacefinder/presentation/management/lead_management.dart';
+import 'package:spacefinder/presentation/report/report_page.dart';
 import 'package:spacefinder/presentation/request/request_management_page.dart';
 import 'package:spacefinder/routes.dart';
 
@@ -228,7 +229,11 @@ class WebNavigationBar extends StatelessWidget {
                     Routes.goTo(const LeadManagementPage(isDemand: true));
                   });
                 }),
-            NavigationSubItem(text: 'Quản lý yêu cầu sau duyệt', onTap: () {}),
+            NavigationSubItem(
+                text: 'Quản lý yêu cầu sau duyệt',
+                onTap: () {
+                  Routes.goTo(const RequestManagementPage());
+                }),
           ],
         ),
         NavigationItem(
@@ -238,23 +243,9 @@ class WebNavigationBar extends StatelessWidget {
             }),
         NavigationItem(
           title: 'Quản lý báo cáo',
-          items: [
-            NavigationSubItem(
-                text: 'Báo cáo doanh thu theo BĐS',
-                onTap: () {
-                  reportDataSource.getReportTotalRevenue();
-                }),
-            NavigationSubItem(
-                text: 'Báo cáo hoạt động đăng tin của khách hàng',
-                onTap: () {
-                  reportDataSource.getReportTotalLeads();
-                }),
-            NavigationSubItem(
-                text: 'Báo cáo hiệu quả kinh doanh của nhân viên',
-                onTap: () {
-                  reportDataSource.getReportSalePerformance();
-                }),
-          ],
+          onTap: () {
+            Routes.goTo(const ReportPage());
+          },
         ),
       ];
     }
@@ -278,9 +269,13 @@ class WebNavigationBar extends StatelessWidget {
                       color: Colors.white),
                   child: Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         maxRadius: 20,
                         minRadius: 20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset('assets/images/avatar.jpg'),
+                        ),
                       ),
                       const SizedBox(
                         width: 8,

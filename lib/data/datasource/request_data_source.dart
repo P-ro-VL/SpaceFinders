@@ -36,7 +36,12 @@ class RequestDataSourceImpl extends RequestDataSource {
       builder = builder.eq('request_type', params.requestType!);
     }
 
-    final result = await builder.select();
+    if ((params.code ?? '').trim().isNotEmpty) {
+      builder =
+          builder.like('code', '%${(params.code ?? '').trim().toUpperCase()}%');
+    }
+
+    final result = await builder.select().order('updated_at', ascending: false);
     if (result.isEmpty) return [];
     return result.map((map) => RequestModel.fromJson(map)).toList();
   }

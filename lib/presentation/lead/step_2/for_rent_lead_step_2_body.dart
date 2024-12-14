@@ -152,7 +152,11 @@ class _ForRentLeadStep2BodyState extends State<ForRentLeadStep2Body>
               controller.legalInfo.value = item;
             }),
         buildUploadSection(
-            text: 'Minh chứng giấy tờ pháp lý', supportedFiles: ['PDF']),
+            text: 'Minh chứng giấy tờ pháp lý',
+            supportedFiles: ['PDF'],
+            onSelectImage: (bytes) {
+              controller.upload(bytes, type: 'document');
+            }),
         Obx(
           () => Column(
             children: (controller.realEstateType.value != 'Đất nền')

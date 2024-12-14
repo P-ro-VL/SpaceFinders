@@ -24,7 +24,9 @@ class _State extends State<LeadDetailContactW> {
 
   @override
   void initState() {
-    getUserDetailUseCase.call(widget.lead.uploadedBy ?? -1).then((response) {
+    getUserDetailUseCase
+        .call(widget.lead.reviewedBy ?? widget.lead.uploadedBy ?? -1)
+        .then((response) {
       saleAgent.value = response.right;
       isLoading.value = false;
     });
@@ -66,15 +68,13 @@ class _State extends State<LeadDetailContactW> {
                         height: 196,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            color: Colors.blue,
-                          ),
+                          child: Image.asset('assets/images/avatar.jpg'),
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(switch (saleAgent.value?.role) {
-                        // 'SALES' => 'Chuyên viên tư vấn BĐS',
-                        // 'ADMIN' => 'Quản trị viên',
+                        'SALES' => 'Chuyên viên tư vấn BĐS',
+                        'ADMIN' => 'Quản trị viên',
                         _ => 'Chuyên viên tư vấn BĐS',
                       }),
                       Text(saleAgent.value?.fullName ?? '--',

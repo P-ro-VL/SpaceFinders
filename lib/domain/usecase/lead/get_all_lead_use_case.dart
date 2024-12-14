@@ -14,7 +14,8 @@ class GetAllLeadUseCase
   @override
   Future<Either<FailureEntity, List<LeadEntity>>> call(
       GetAllLeadParams params) async {
-    return await repository.getAllLeads(params);
+    final allLeads = await repository.getAllLeads(params);
+    return allLeads;
   }
 }
 
@@ -30,6 +31,7 @@ class GetAllLeadParams {
   final num? minArea;
   final num? maxArea;
   final num? uploadedBy;
+  final String? propertyCodeKeyword;
 
   GetAllLeadParams({
     this.status,
@@ -43,5 +45,6 @@ class GetAllLeadParams {
     this.uploadedBy,
     this.minArea,
     this.maxArea,
+    this.propertyCodeKeyword,
   });
 }

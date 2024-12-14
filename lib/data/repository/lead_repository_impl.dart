@@ -49,4 +49,10 @@ class LeadRepositoryImpl extends LeadRepository {
   Future<void> uploadLeadImages(num leadId, List<String> images) async {
     await dataSource.uploadLeadImages(leadId, images);
   }
+
+  @override
+  Future<Either<FailureEntity, void>> deleteLead(num? leadId) async {
+    await dataSource.deleteLead(leadId);
+    return Either.cond(true, FailureEntity(), null);
+  }
 }

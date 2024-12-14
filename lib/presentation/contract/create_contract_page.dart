@@ -28,6 +28,13 @@ class _CreateContractPageState extends State<CreateContractPage>
   final controller = Get.put(CreateContractPageController());
 
   @override
+  void initState() {
+    controller.propertyCode.value = widget.propertyCode ?? '';
+    controller.rentalType.value = widget.rentalType ?? 'Dài hạn';
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,56 +137,62 @@ class _CreateContractPageState extends State<CreateContractPage>
                   isRequired: true,
                   onSelectImage: (bytes) => controller.bytes = bytes),
               const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      Routes.goTo(ContractManagementPage());
-                    },
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: const Color(0xff2B78A3)),
-                        borderRadius: BorderRadius.circular(8),
+              Obx(
+                () => controller.isLoading.value
+                    ? const CircularProgressIndicator()
+                    : Row(
+                        children: [
+                          Expanded(
+                              child: GestureDetector(
+                            onTap: () {
+                              Routes.goTo(const ContractManagementPage());
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(color: const Color(0xff2B78A3)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Center(
+                                child: Text('Huỷ',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(0xff2B78A3))),
+                              ),
+                            ),
+                          )),
+                          const SizedBox(width: 8),
+                          Expanded(
+                              child: GestureDetector(
+                            onTap: () async {
+                              await controller.createContract();
+                              Routes.goTo(ContractManagementPage());
+                              Future.delayed(const Duration(seconds: 2), () {
+                                Get.showSnackbar(const GetSnackBar(
+                                  backgroundColor: Colors.green,
+                                  title: 'Thành công',
+                                  message: 'Tạo hợp đồng thành công',
+                                  duration: Duration(seconds: 2),
+                                ));
+                              });
+                            },
+                            child: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color(0xff2B78A3),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(Ln.i?.contractIcreate ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14, color: Colors.white)),
+                              ),
+                            ),
+                          ))
+                        ],
                       ),
-                      child: const Center(
-                        child: Text('Huỷ',
-                            style: TextStyle(
-                                fontSize: 14, color: Color(0xff2B78A3))),
-                      ),
-                    ),
-                  )),
-                  const SizedBox(width: 8),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () async {
-                      await controller.createContract();
-                      Routes.goTo(ContractManagementPage());
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Get.showSnackbar(const GetSnackBar(
-                          backgroundColor: Colors.green,
-                          title: 'Thành công',
-                          message: 'Tạo hợp đồng thành công',
-                          duration: Duration(seconds: 2),
-                        ));
-                      });
-                    },
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: const Color(0xff2B78A3),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Text(Ln.i?.contractIcreate ?? '',
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.white)),
-                      ),
-                    ),
-                  ))
-                ],
               ),
               const SizedBox(height: 50),
             ],

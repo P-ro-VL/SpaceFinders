@@ -21,9 +21,11 @@ class GetAllRequestsUseCase extends UseCase<
 class GetAllRequestsParams {
   final String? requestStatus;
   final String? requestType;
+  final String? code;
 
   GetAllRequestsParams({
     this.requestStatus,
     this.requestType,
+    this.code,
   });
 }

@@ -17,94 +17,73 @@ class ContractManagementPage extends StatefulWidget {
   State<ContractManagementPage> createState() => _ContractManagementPageState();
 }
 
-class _ContractManagementPageState extends State<ContractManagementPage> {
-  late final controller = Get.put(ContractManagementPageController());
+class _ContractManagementPageState extends State<ContractManagementPage>
+    with FormMixin {
+  final controller = Get.put(ContractManagementPageController());
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 64),
-        Obx(
-          () => controller.isLoading.value
-              ? CircularProgressIndicator()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          Ln.i?.contractImanagement ?? '',
-                          style: const TextStyle(
-                              fontSize: 22,
-                              color: Color(0xff287098),
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 12),
-                        GestureDetector(
-                          onTap: () {
-                            Routes.goTo(CreateContractPage());
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xff287098),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.edit_square,
-                                    color: Colors.white, size: 20),
-                                const SizedBox(width: 4),
-                                Text(Ln.i?.contractIcreate ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _ContractManagementFilterSection(),
-                        if (controller.hasFilter)
-                          GestureDetector(
-                            onTap: () {
-                              controller.clearFilter();
-                            },
-                            child: Container(
-                              width: 160,
-                              decoration: BoxDecoration(
+    return Container(
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.black.withOpacity(0.2)),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    Ln.i?.contractImanagement ?? '',
+                    style: const TextStyle(
+                        fontSize: 22,
+                        color: Color(0xff287098),
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () {
+                      Routes.goTo(CreateContractPage());
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff287098),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit_square,
+                              color: Colors.white, size: 20),
+                          const SizedBox(width: 4),
+                          Text(Ln.i?.contractIcreate ?? '',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                border:
-                                    Border.all(color: const Color(0xff2B78A3)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                  child: const Text('Xoá tìm kiếm',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xff2B78A3)))
-                                      .paddingSymmetric(vertical: 8)),
-                            ),
-                          ),
-                      ],
+                              )),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _ContractManagementFilterSection(),
+                  if (controller.hasFilter)
                     GestureDetector(
                       onTap: () {
-                        final reportDataSource = ReportDataSourceImpl();
-                        reportDataSource.getAllContracts();
+                        controller.clearFilter();
                       },
                       child: Container(
                         width: 160,
@@ -113,36 +92,63 @@ class _ContractManagementPageState extends State<ContractManagementPage> {
                           border: Border.all(color: const Color(0xff2B78A3)),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.file_download_outlined,
-                                color: Color(0xff2B78A3)),
-                            const SizedBox(width: 8),
-                            const Text('Xuất Excel',
+                        child: Center(
+                            child: const Text('Xoá tìm kiếm',
                                     style: TextStyle(
                                         fontSize: 14, color: Color(0xff2B78A3)))
-                                .paddingSymmetric(vertical: 8),
-                          ],
-                        ),
+                                .paddingSymmetric(vertical: 8)),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 800,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Colors.black.withOpacity(0.5))),
-                      child: const ContractManagementTable(),
+                ],
+              ),
+              const SizedBox(height: 16),
+              buildInput(
+                  text: Ln.i?.leadIsearchByCode,
+                  defaultValue: controller.keyword.value,
+                  isRequired: false,
+                  onChanged: (keyword) async {
+                    controller.keyword.value = keyword;
+                  }),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {
+                    final reportDataSource = ReportDataSourceImpl();
+                    reportDataSource.getAllContracts();
+                  },
+                  child: Container(
+                    width: 160,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xff2B78A3)),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    const SizedBox(
-                      height: 24,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.file_download_outlined,
+                            color: Color(0xff2B78A3)),
+                        const SizedBox(width: 8),
+                        const Text('Xuất Excel',
+                                style: TextStyle(
+                                    fontSize: 14, color: Color(0xff2B78A3)))
+                            .paddingSymmetric(vertical: 8),
+                      ],
                     ),
-                  ],
-                ).paddingSymmetric(horizontal: 32),
-        ),
-      ],
-    );
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const ContractManagementTable(),
+              const SizedBox(
+                height: 24,
+              ),
+            ],
+          ),
+        ],
+      ),
+    ).paddingSymmetric(horizontal: 32).marginOnly(top: 16);
   }
 }
 

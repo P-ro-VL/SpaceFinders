@@ -20,7 +20,7 @@ class _ContractManagementTableState extends State<ContractManagementTable> {
   Widget build(BuildContext context) {
     return Obx(
       () => controller.isLoading.value
-          ? CircularProgressIndicator()
+          ? const Center(child: CircularProgressIndicator())
           : Column(
               children: [
                 SfDataGrid(
@@ -42,7 +42,6 @@ class _ContractManagementTableState extends State<ContractManagementTable> {
                             ))),
                     GridColumn(
                         columnName: 'code',
-                        columnWidthMode: ColumnWidthMode.fitByCellValue,
                         label: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,
@@ -74,6 +73,7 @@ class _ContractManagementTableState extends State<ContractManagementTable> {
                             ))),
                     GridColumn(
                         columnName: 'type',
+                        columnWidthMode: ColumnWidthMode.fill,
                         label: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,

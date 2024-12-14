@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:spacefinder/data/model/lead_model.dart';
 import 'package:spacefinder/domain/usecase/lead/create_lead_use_case.dart';
 import 'package:spacefinder/domain/usecase/lead/get_all_lead_use_case.dart';
@@ -18,6 +20,8 @@ abstract class LeadDataSource {
   Future<void> uploadLeadImages(num leadId, List<String> images);
 
   Future<List<String>?> getLeadImages(num leadId);
+
+  Future<void> deleteLead(num? leadId);
 }
 
 class LeadDataSourceImpl extends LeadDataSource {
@@ -102,20 +106,24 @@ class LeadDataSourceImpl extends LeadDataSource {
       builder = builder.eq('uploaded_by', params.uploadedBy!);
     }
 
-    final response = await builder;
+    if ((params.propertyCodeKeyword ?? '').trim().isNotEmpty) {
+      builder = builder.like("code",
+          "%${(params.propertyCodeKeyword ?? '').trim().toUpperCase()}%");
+    }
+
+    final response = await builder.order('updated_at', ascending: false);
     return response.map((e) => LeadModel.fromJson(e)).toList();
   }
 
   @override
   Future<void> uploadLeadImages(num leadId, List<String> images) async {
     for (String image in images) {
-      try {
-        await client.from('lead_images').insert({
-          'lead_id': leadId,
-          'image_url': image,
-          'image_type': '.png',
-        });
-      } catch (_) {}
+      await client.from('lead_images').insert({
+        'image_id': Random.secure().nextInt(99999999) + 1000,
+        'lead_id': leadId,
+        'image_url': image,
+        'image_type': '.png',
+      });
     }
   }
 
@@ -131,5 +139,13 @@ class LeadDataSourceImpl extends LeadDataSource {
           .from('spacefinder-cdn')
           .getPublicUrl(e.values.first.replaceAll("spacefinder-cdn/", ""));
     }).toList();
+  }
+
+  @override
+  Future<void> deleteLead(num? leadId) async {
+    await client
+        .from(Constants.table_lead)
+        .delete()
+        .eq('lead_id', leadId ?? -1);
   }
 }

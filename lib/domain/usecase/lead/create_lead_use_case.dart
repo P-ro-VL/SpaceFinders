@@ -45,6 +45,9 @@ class CreateLeadParams {
   final dynamic isDesired;
   final String? legalStatus;
   final String? code;
+  final String? legalProof;
+  final num? createdAt;
+  final num? updatedAt;
 
   CreateLeadParams({
     this.uploadedBy,
@@ -72,6 +75,9 @@ class CreateLeadParams {
     this.isDesired,
     this.legalStatus,
     this.code,
+    this.legalProof,
+    this.createdAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toJson() {
@@ -102,6 +108,9 @@ class CreateLeadParams {
       'review_note': reviewNote,
       'legal_status': legalStatus,
       'code': code,
+      'legal_documents': legalProof,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }

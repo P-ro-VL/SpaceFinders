@@ -52,7 +52,16 @@ class _LeadListingItemState extends State<LeadListingItem> {
                 borderRadius: BorderRadius.circular(30),
                 child: isLoading.value
                     ? const CircularProgressIndicator()
-                    : Image.network(images.firstOrNull ?? ''),
+                    : Image.network(
+                        images.firstOrNull ?? '',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Center(
+                            child: Text(
+                          'Chưa cập nhật',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        )),
+                      ),
               ),
             ),
             const SizedBox(height: 32),

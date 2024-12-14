@@ -16,4 +16,5 @@ abstract class LeadRepository {
 
   Future<void> uploadLeadImages(num leadId, List<String> images);
   Future<Either<FailureEntity, List<String>>> getLeadImages(num leadId);
+  Future<Either<FailureEntity, void>> deleteLead(num? leadId);
 }

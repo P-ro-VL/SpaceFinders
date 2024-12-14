@@ -220,7 +220,7 @@ class CreateLeadStep3 extends StatelessWidget {
           ),
           Wrap(
             spacing: 8,
-            children: controller.images
+            children: controller.cachedImages
                 .map((e) => Container(
                       width: 150,
                       height: 150,
@@ -228,7 +228,14 @@ class CreateLeadStep3 extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: Colors.black26)),
-                      child: Image.network(e),
+                      child: Image.memory(
+                        e,
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.article,
+                          size: 32,
+                          color: Colors.blue,
+                        ),
+                      ),
                     ))
                 .toList(),
           )
@@ -325,14 +332,19 @@ class CreateLeadStep3 extends StatelessWidget {
 
   Widget _buildText({required String? title, required String? text}) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title ?? '',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          Text(
-            (text ?? '').isEmpty ? '--' : text!,
-            textAlign: TextAlign.right,
+          const SizedBox(width: 16),
+          Flexible(
+            child: Text(
+              (text ?? '').isEmpty ? '--' : text!,
+              textAlign: TextAlign.right,
+              softWrap: true,
+            ),
           ),
         ],
       );

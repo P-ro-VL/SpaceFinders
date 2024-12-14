@@ -53,6 +53,8 @@ class CreateContractParams {
       'start_date': startDate,
       'end_date': endDate,
       'url': url,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+      'updated_at': DateTime.now().millisecondsSinceEpoch,
     };
   }
 }

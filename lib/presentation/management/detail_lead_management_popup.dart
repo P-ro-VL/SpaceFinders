@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spacefinder/common.dart';
 import 'package:spacefinder/constants.dart';
 import 'package:spacefinder/domain/entity/lead_entity.dart';
 import 'package:spacefinder/l10n/app_l18.dart';
 import 'package:spacefinder/presentation/common/form_mixin.dart';
 import 'package:spacefinder/presentation/management/detail_lead_management_popup_c.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class DetailLeadManagementPopup extends StatefulWidget {
@@ -251,13 +253,34 @@ class _DetailLeadManagementPopupState extends State<DetailLeadManagementPopup>
                                         isDisabled: true,
                                         defaultValue: 'Nhấn để xem minh chứng',
                                         onClick: () {
-                                          launchUrlString(controller.proof);
+                                          if (controller.proof.isEmpty) {
+                                            Get.showSnackbar(
+                                              const GetSnackBar(
+                                                title: 'Cảnh báo',
+                                                message:
+                                                    'Tin đăng này không có file minh chứng BĐS',
+                                                duration: Duration(seconds: 3),
+                                                backgroundColor: Colors.orange,
+                                              ),
+                                            );
+                                            return;
+                                          }
+                                          final url = Supabase
+                                              .instance.client.storage
+                                              .from('spacefinder-cdn')
+                                              .getPublicUrl(controller.proof
+                                                  .replaceAll(
+                                                      "spacefinder-cdn/", ""));
+                                          launchUrlString(url);
                                         }),
                                   },
                                   _buildDropdown(
                                     text: Ln.i?.postIfurniture,
                                     value: controller.furniture.value,
-                                    values: Constants.default_furnishing.names,
+                                    values: [
+                                      ChoiceItem(code: '', name: '--'),
+                                      ...Constants.default_furnishing
+                                    ].names,
                                     isRequired: false,
                                     onSelect: (item) =>
                                         controller.furniture.value = item,
@@ -292,8 +315,10 @@ class _DetailLeadManagementPopupState extends State<DetailLeadManagementPopup>
                                         text: Ln.i?.postIhouseDirection,
                                         value:
                                             controller.housingDirection.value,
-                                        values:
-                                            Constants.default_directions.names,
+                                        values: [
+                                          ChoiceItem(code: '', name: '--'),
+                                          ...Constants.default_directions
+                                        ].names,
                                         isRequired: false,
                                         onSelect: (item) => controller
                                             .housingDirection.value = item,
@@ -304,8 +329,10 @@ class _DetailLeadManagementPopupState extends State<DetailLeadManagementPopup>
                                         text: Ln.i?.postIbalconyDirection,
                                         value:
                                             controller.balconyDirection.value,
-                                        values:
-                                            Constants.default_directions.names,
+                                        values: [
+                                          ChoiceItem(code: '', name: '--'),
+                                          ...Constants.default_directions
+                                        ].names,
                                         isRequired: false,
                                         onSelect: (item) => controller
                                             .balconyDirection.value = item,
@@ -453,73 +480,6 @@ class _DetailLeadManagementPopupState extends State<DetailLeadManagementPopup>
           ),
           onChanged: onChanged,
         ),
-        const SizedBox(
-          height: 20,
-        )
-      ],
-    );
-  }
-
-  Widget buildClickableInput({
-    required String? text,
-    required Function() onClick,
-    bool isDisabled = false,
-    bool isRequired = true,
-    bool isUrl = true,
-    String? note,
-    String? defaultValue,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              text ?? '',
-              style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xff64646C)),
-            ),
-            const Text(' *',
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.red)),
-          ],
-        ),
-        const SizedBox(
-          height: 4,
-        ),
-        TextFormField(
-            decoration: InputDecoration(
-              enabled: !isDisabled,
-              border: OutlineInputBorder(),
-            ),
-            onTap: onClick,
-            controller: TextEditingController(text: defaultValue ?? ''),
-            validator: (s) {
-              if (!isRequired) return null;
-              if (s == null || s.isEmpty) {
-                return 'Đây là thông tin bắt buộc, vui lòng bổ sung';
-              }
-            },
-            style: isUrl
-                ? const TextStyle(
-                    color: Color(0xff1253F6),
-                    decoration: TextDecoration.underline,
-                    decorationColor: Color(0xff1253F6))
-                : null),
-        if (note != null) ...{
-          const SizedBox(
-            height: 4,
-          ),
-          Text(note,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xff93939B),
-              )),
-        },
         const SizedBox(
           height: 20,
         )

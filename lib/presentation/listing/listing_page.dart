@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spacefinder/common.dart';
 import 'package:spacefinder/constants.dart';
 import 'package:spacefinder/l10n/app_l18.dart';
+import 'package:spacefinder/utils/random_picker.dart';
 
 import '../../routes.dart';
 import '../lead/detail/lead_detail_page.dart';
@@ -40,7 +41,10 @@ class LeadListingPage extends StatelessWidget {
                       : controller.leads
                           .map((e) => GestureDetector(
                                 onTap: () {
-                                  Routes.goTo(LeadDetailPage(lead: e));
+                                  Routes.goTo(LeadDetailPage(
+                                      lead: e,
+                                      relatingLeads:
+                                          controller.leads.pickRandomItems(5)));
                                 },
                                 child: isDemand && e.isDesired == isDemand
                                     ? DemandListingItem(lead: e)

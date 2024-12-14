@@ -156,6 +156,7 @@ mixin FormMixin {
     TextInputFormatter? formatter,
     String? note,
     String? defaultValue,
+    bool? obsecure = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,6 +182,7 @@ mixin FormMixin {
           height: 4,
         ),
         TextFormField(
+          obscureText: obsecure ?? false,
           decoration: InputDecoration(
             enabled: !isDisabled,
             border: OutlineInputBorder(),
@@ -243,25 +245,27 @@ mixin FormMixin {
         const SizedBox(
           height: 4,
         ),
-        TextFormField(
-            decoration: InputDecoration(
-              enabled: !isDisabled,
-              border: OutlineInputBorder(),
-            ),
-            onTap: onClick,
-            controller: TextEditingController(text: defaultValue ?? ''),
-            validator: (s) {
-              if (!isRequired) return null;
-              if (s == null || s.isEmpty) {
-                return 'Đây là thông tin bắt buộc, vui lòng bổ sung';
-              }
-            },
-            style: isUrl
-                ? const TextStyle(
-                    color: Color(0xff1253F6),
-                    decoration: TextDecoration.underline,
-                    decorationColor: Color(0xff1253F6))
-                : null),
+        GestureDetector(
+          onTap: onClick,
+          child: TextFormField(
+              decoration: InputDecoration(
+                enabled: !isDisabled,
+                border: OutlineInputBorder(),
+              ),
+              controller: TextEditingController(text: defaultValue ?? ''),
+              validator: (s) {
+                if (!isRequired) return null;
+                if (s == null || s.isEmpty) {
+                  return 'Đây là thông tin bắt buộc, vui lòng bổ sung';
+                }
+              },
+              style: isUrl
+                  ? const TextStyle(
+                      color: Color(0xff1253F6),
+                      decoration: TextDecoration.underline,
+                      decorationColor: Color(0xff1253F6))
+                  : null),
+        ),
         if (note != null) ...{
           const SizedBox(
             height: 4,

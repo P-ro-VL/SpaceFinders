@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:spacefinder/common.dart';
 import 'package:spacefinder/presentation/lead/detail/lead_detail_page_c.dart';
 import 'package:spacefinder/presentation/lead/detail/lead_detail_property_w.dart';
 
@@ -28,7 +29,7 @@ class LeadDetailPropertySection extends StatelessWidget {
               LeadDetailPropertyW(
                   icon: Icons.sell,
                   title: 'Mức giá mong muốn',
-                  value: '${controller.lead.value?.price ?? '--'} triệu đồng'),
+                  value: (controller.lead.value?.price ?? 0).currencyFormat),
               LeadDetailPropertyW(
                   icon: Icons.aspect_ratio_outlined,
                   title: 'Diện tích mong muốn',

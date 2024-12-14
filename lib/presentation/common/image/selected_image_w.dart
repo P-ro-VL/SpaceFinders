@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -34,7 +35,8 @@ class SelectedImageWidget extends StatelessWidget {
                   )
                 : Image.memory(path),
           ),
-          Text(name, style: const TextStyle(fontSize: 14)),
+          Text(name.substring(0, min(100, name.length)),
+              style: const TextStyle(fontSize: 14)),
           GestureDetector(
             onTap: () {
               onDelete?.call();

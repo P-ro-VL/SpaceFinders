@@ -39,8 +39,6 @@ class _LeadHistoryPageState extends State<LeadHistoryPage> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xff287098))),
                 const SizedBox(height: 8),
-                // if (Get.find<AuthenticationController>().user.value?.role ==
-                //     'CUSTOMER')
                 GestureDetector(
                   onTap: () {
                     showDialog(
@@ -65,29 +63,34 @@ class _LeadHistoryPageState extends State<LeadHistoryPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          IntrinsicWidth(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xff287098),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.support_agent,
-                                      color: Colors.white, size: 20),
-                                  const SizedBox(width: 4),
-                                  Text(Ln.i?.leadIcreateRequest ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      )),
-                                ],
+                          if (Get.find<AuthenticationController>()
+                                  .user
+                                  .value
+                                  ?.role ==
+                              'CUSTOMER')
+                            IntrinsicWidth(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xff287098),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.support_agent,
+                                        color: Colors.white, size: 20),
+                                    const SizedBox(width: 4),
+                                    Text(Ln.i?.leadIcreateRequest ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        )),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
                           const SizedBox(height: 40),
                           SfDataGrid(
                             source: dataSource,
@@ -175,7 +178,7 @@ class _LeadHistoryPageState extends State<LeadHistoryPage> {
                                       padding: const EdgeInsets.all(8.0),
                                       alignment: Alignment.center,
                                       child: const Text(
-                                        'Mức giá (triệu VNĐ)',
+                                        'Mức giá',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),

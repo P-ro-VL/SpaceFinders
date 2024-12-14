@@ -8,6 +8,7 @@ import 'package:spacefinder/data/repository/user_repository_impl.dart';
 import 'package:spacefinder/domain/entity/request_entity.dart';
 import 'package:spacefinder/domain/usecase/get_user_detail_use_case.dart';
 import 'package:spacefinder/domain/usecase/lead/get_lead_detail_use_case.dart';
+import 'package:spacefinder/domain/usecase/lead/update_lead_use_case.dart';
 import 'package:spacefinder/domain/usecase/request/get_all_requests_use_case.dart';
 import 'package:spacefinder/domain/usecase/request/update_request_use_case.dart';
 import 'package:spacefinder/presentation/request/request_management_data_source.dart';
@@ -23,6 +24,7 @@ class RequestManagementPageController extends GetxController {
   final dataSource = Rxn<RequestManagementDataSource>();
 
   final requestRepository = RequestRepositoryImpl(RequestDataSourceImpl());
+  final leadRepository = LeadRepositoryImpl(LeadDataSourceImpl());
 
   final getLeadDetailUseCase =
       GetLeadDetailUseCase(LeadRepositoryImpl(LeadDataSourceImpl()));
@@ -31,6 +33,7 @@ class RequestManagementPageController extends GetxController {
 
   late final getAllRequestsUseCase = GetAllRequestsUseCase(requestRepository);
   late final updateRequestUseCase = UpdateRequestUseCase(requestRepository);
+  late final updateLeadUseCase = UpdateLeadUseCase(leadRepository);
 
   @override
   void onInit() {
@@ -46,16 +49,25 @@ class RequestManagementPageController extends GetxController {
     fetchData();
   }
 
-  Future<bool> updateRequestStatus(dynamic requestId, String newStatus,
-      String reviewNote, num reviewedBy) async {
+  Future<bool> updateRequestStatus(RequestEntity requestEntity,
+      String newStatus, String reviewNote, num reviewedBy) async {
     final params = UpdateRequestParams(
         status: newStatus,
-        requestId: requestId,
+        requestId: requestEntity.requestId ?? -1,
         reviewNote: reviewNote,
         reviewedBy: reviewedBy);
     await updateRequestUseCase.call(params);
+    if (newStatus != 'REJECTED') await updateRelativeLeadStatus(requestEntity);
     fetchData();
     return true;
+  }
+
+  Future<void> updateRelativeLeadStatus(RequestEntity requestEntity) async {
+    final isExtendType = requestEntity.requestType == 'Gia hạn';
+    final nextLeadStatus = isExtendType ? 'APPROVED' : 'CLOSED';
+
+    await updateLeadUseCase
+        .call(UpdateLeadParams(requestEntity.leadId, status: nextLeadStatus));
   }
 
   Future<void> fetchData() async {

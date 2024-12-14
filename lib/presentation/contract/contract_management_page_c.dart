@@ -36,9 +36,14 @@ class ContractManagementPageController extends GetxController {
       filterPropertyType.value != 'All' ||
       filterRentalType.value != 'All';
 
+  final keyword = RxString('');
+
   @override
   void onInit() {
     fetchData();
+    debounce(keyword, (value) {
+      fetchData();
+    }, time: const Duration(milliseconds: 300));
     super.onInit();
   }
 
@@ -52,7 +57,8 @@ class ContractManagementPageController extends GetxController {
 
   void fetchData() async {
     isLoading.value = true;
-    final response = await getAllContractsUseCase.call(NoParams());
+    final response = await getAllContractsUseCase
+        .call(GetAllContractsParams(keyword: keyword.value));
     response.fold((l) {
       isLoading.value = false;
     }, (r) async {
@@ -65,7 +71,7 @@ class ContractManagementPageController extends GetxController {
         contract.propertyType = lead.right.propertyType ?? '';
         contract.commission =
             (lead.right.rentalType == 'Dài hạn' ? 0.08 : 0.1) *
-                (lead.right.price ?? 1);
+                (contract.rentalPrice ?? 1);
 
         return contract;
       }));

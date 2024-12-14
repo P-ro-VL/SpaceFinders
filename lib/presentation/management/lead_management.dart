@@ -25,36 +25,31 @@ class _LeadManagementPageState extends State<LeadManagementPage> {
     return Column(
       children: [
         const SizedBox(height: 64),
-        Obx(
-          () => controller.isLoading.value
-              ? CircularProgressIndicator()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title ?? '',
-                      style: const TextStyle(
-                          fontSize: 22,
-                          color: Color(0xff287098),
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(32),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          border:
-                              Border.all(color: Colors.black.withOpacity(0.5))),
-                      child: LeadManagementTable(leads: controller.leads),
-                    ),
-                    const SizedBox(
-                      height: 24,
-                    ),
-                  ],
-                ).paddingSymmetric(horizontal: 32),
-        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title ?? '',
+              style: const TextStyle(
+                  fontSize: 22,
+                  color: Color(0xff287098),
+                  fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black.withOpacity(0.5))),
+              child: LeadManagementTable(leads: controller.leads),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+          ],
+        ).paddingSymmetric(horizontal: 32),
       ],
     );
   }

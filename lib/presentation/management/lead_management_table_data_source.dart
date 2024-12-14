@@ -68,7 +68,7 @@ class LeadTableDataSource extends DataGridSource {
               'PENDING' => Colors.orange,
               'APPROVED' => Colors.green,
               'RENTED' => const Color(0xff287098),
-              'REJECTED' || 'CLOSED' => Colors.red,
+              'REJECTED' => Colors.red,
               _ => Colors.grey
             },
           ),
@@ -186,11 +186,34 @@ class LeadTableDataSource extends DataGridSource {
                     ));
           },
           child: const Icon(
-            Icons.content_paste,
-            color: Colors.blue,
+            Icons.remove_red_eye_outlined,
+            color: Colors.black87,
             size: 16,
           ),
         ),
+        if (user.role == 'ADMIN') ...{
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                  context: Get.context!,
+                  builder: (context) => AlertDialog(
+                        contentPadding: EdgeInsets.zero,
+                        content: DetailLeadManagementPopup(
+                            lead: leadEntity, isEdit: true),
+                      ));
+            },
+            child: const Tooltip(
+              message: 'Chỉnh sửa tin đăng',
+              waitDuration: Duration.zero,
+              child: Icon(
+                Icons.edit_document,
+                color: Colors.blue,
+                size: 16,
+              ),
+            ),
+          ),
+        },
         if (!leadEntity.isDesired) ...{
           const SizedBox(width: 8),
           GestureDetector(
@@ -210,7 +233,30 @@ class LeadTableDataSource extends DataGridSource {
               ),
             ),
           ),
-        }
+        },
+        if (user.role == 'ADMIN') ...{
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              showDialog(
+                  context: Get.context!,
+                  builder: (context) => AlertDialog(
+                        contentPadding: EdgeInsets.zero,
+                        content: DetailLeadManagementPopup(
+                            lead: leadEntity, isEdit: true),
+                      ));
+            },
+            child: const Tooltip(
+              message: 'Xoá tin đăng',
+              waitDuration: Duration.zero,
+              child: Icon(
+                Icons.delete_outline_outlined,
+                color: Colors.red,
+                size: 16,
+              ),
+            ),
+          ),
+        },
       ],
     );
   }
@@ -221,10 +267,10 @@ class LeadTableDataSource extends DataGridSource {
         context: Get.context!,
         builder: (_) => AlertDialog(
               contentPadding: EdgeInsets.zero,
-              content: Container(
-                width: 500,
-                height: 300,
+              content: IntrinsicHeight(
                 child: Container(
+                  padding: const EdgeInsets.all(32),
+                  width: 500,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.white),
@@ -249,13 +295,15 @@ class LeadTableDataSource extends DataGridSource {
                       SizedBox(
                         height: 100,
                         child: TextField(
+                          expands: true,
+                          maxLines: null,
                           controller: noteController,
-                          decoration:
-                              InputDecoration(border: OutlineInputBorder()),
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
                         ),
-                      ).paddingSymmetric(horizontal: 8),
+                      ),
                       const SizedBox(
-                        height: 8,
+                        height: 24,
                       ),
                       Row(
                         children: [
@@ -264,18 +312,16 @@ class LeadTableDataSource extends DataGridSource {
                               onTap: () {
                                 Get.back();
                               },
-                              child: Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(color: Colors.blue)),
-                                  child: const Center(
-                                    child: Text(
-                                      'Huỷ',
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: Colors.blue)),
+                                child: const Center(
+                                  child: Text(
+                                    'Huỷ',
+                                    style: TextStyle(color: Colors.blue),
                                   ),
                                 ),
                               ),
@@ -298,17 +344,15 @@ class LeadTableDataSource extends DataGridSource {
                                     leadEntity.leadId ?? -1,
                                     noteController.text);
                               },
-                              child: Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: Colors.blue),
-                                  child: const Center(
-                                    child: Text(
-                                      'Xác nhận',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                              child: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.blue),
+                                child: const Center(
+                                  child: Text(
+                                    'Xác nhận',
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -317,7 +361,7 @@ class LeadTableDataSource extends DataGridSource {
                         ],
                       )
                     ],
-                  ).paddingAll(8),
+                  ),
                 ),
               ),
             ));

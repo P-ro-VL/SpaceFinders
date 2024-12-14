@@ -10,6 +10,7 @@ import 'package:spacefinder/domain/usecase/lead/get_all_lead_use_case.dart';
 import 'package:spacefinder/domain/usecase/lead/update_lead_use_case.dart';
 
 import '../../domain/entity/user_entity.dart';
+import 'lead_management_table_data_source.dart';
 
 class LeadManagementController extends GetxController {
   LeadManagementController(bool isDemand) {
@@ -47,9 +48,16 @@ class LeadManagementController extends GetxController {
       filterMinAreaRange.value != 0 ||
       filterMaxAreaRange.value != 300;
 
+  final keyword = RxString('');
+  DateTime lastSearch = DateTime.now();
+  LeadTableDataSource dataSource = LeadTableDataSource(leads: []);
+
   @override
   void onInit() {
     fetchData();
+    debounce(keyword, (value) {
+      fetchData();
+    }, time: const Duration(milliseconds: 300));
     super.onInit();
   }
 
@@ -91,6 +99,7 @@ class LeadManagementController extends GetxController {
       minArea: filterMinAreaRange.value,
       maxArea:
           filterMaxAreaRange.value == 300 ? null : filterMaxAreaRange.value,
+      propertyCodeKeyword: keyword.value,
     );
     final response = await getAllLeadUseCase.call(params);
     response.fold((l) {}, (r) async {
@@ -122,6 +131,7 @@ class LeadManagementController extends GetxController {
         }
       }
       leads.assignAll(r);
+      dataSource = LeadTableDataSource(leads: leads);
       isLoading.value = false;
     });
   }

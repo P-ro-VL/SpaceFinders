@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:spacefinder/presentation/request/request_management_page_c.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../data/datasource/report_data_source.dart';
+
 class RequestManagementTable extends StatelessWidget {
   RequestManagementTable({super.key});
 
@@ -12,12 +14,42 @@ class RequestManagementTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => controller.isLoading.value
-          ? const SizedBox.shrink()
-          : Column(
-              children: [
-                SfDataGrid(
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: GestureDetector(
+            onTap: () {
+              final reportDataSource = ReportDataSourceImpl();
+              reportDataSource.getAllRequests();
+            },
+            child: Container(
+              width: 160,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: const Color(0xff2B78A3)),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.file_download_outlined,
+                      color: Color(0xff2B78A3)),
+                  const SizedBox(width: 8),
+                  const Text('Xuất Excel',
+                          style:
+                              TextStyle(fontSize: 14, color: Color(0xff2B78A3)))
+                      .paddingSymmetric(vertical: 8),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Obx(
+          () => controller.isLoading.value
+              ? const CircularProgressIndicator()
+              : SfDataGrid(
                   source: controller.dataSource.value!,
                   rowHeight: 60,
                   headerRowHeight: 60,
@@ -127,16 +159,20 @@ class RequestManagementTable extends StatelessWidget {
                             ))),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Container(
-                    height: 60,
-                    child: SfDataPager(
-                      delegate: controller.dataSource.value!,
-                      pageCount: max(1, controller.requests.length / 4),
-                      direction: Axis.horizontal,
-                    )),
-              ],
-            ),
+        ),
+        const SizedBox(height: 8),
+        Obx(
+          () => controller.isLoading.value
+              ? const SizedBox()
+              : Container(
+                  height: 60,
+                  child: SfDataPager(
+                    delegate: controller.dataSource.value!,
+                    pageCount: max(1, controller.requests.length / 4),
+                    direction: Axis.horizontal,
+                  )),
+        ),
+      ],
     );
   }
 }

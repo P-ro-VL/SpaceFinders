@@ -29,6 +29,8 @@ class LeadEntity {
   final String? legalDocuments;
   final String? legalStatus;
 
+  List<String>? images;
+
   String? uploadedByName;
   String? reviewedByName;
 
@@ -62,5 +64,6 @@ class LeadEntity {
     this.code,
     this.legalStatus,
     this.legalDocuments,
+    this.images,
   });
 }

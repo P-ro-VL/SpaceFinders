@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:spacefinder/presentation/common/form_mixin.dart';
 import 'package:spacefinder/presentation/request/request_management_page_c.dart';
 
+import '../../l10n/app_l18.dart';
 import 'request_management_table.dart';
 
 class RequestManagementPage extends StatefulWidget {
@@ -12,67 +13,64 @@ class RequestManagementPage extends StatefulWidget {
   State<RequestManagementPage> createState() => _RequestManagementPageState();
 }
 
-class _RequestManagementPageState extends State<RequestManagementPage> {
+class _RequestManagementPageState extends State<RequestManagementPage>
+    with FormMixin {
   final controller = Get.put(RequestManagementPageController());
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => controller.isLoading.value
-        ? const CircularProgressIndicator()
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Quản lý yêu cầu sau duyệt tin đăng Bất động sản',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color(0xff287098),
+            )),
+        const SizedBox(height: 24),
+        Container(
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.black26),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
             children: [
-              const Text('Quản lý yêu cầu sau duyệt tin đăng Bất động sản',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff287098),
-                  )),
-              const SizedBox(height: 24),
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black26),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _RequestManagementFilterSection(),
-                        if (controller.filterLeadType.value != 'All' ||
-                            controller.filterRequestType.value != 'All' ||
-                            controller.filterStatus.value != 'All')
-                          GestureDetector(
-                            onTap: () {
-                              controller.clearFilter();
-                            },
-                            child: Container(
-                              width: 160,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border:
-                                    Border.all(color: const Color(0xff2B78A3)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                  child: const Text('Xoá tìm kiếm',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xff2B78A3)))
-                                      .paddingSymmetric(vertical: 8)),
-                            ),
-                          ),
-                      ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _RequestManagementFilterSection(),
+                  if (controller.filterLeadType.value != 'All' ||
+                      controller.filterRequestType.value != 'All' ||
+                      controller.filterStatus.value != 'All')
+                    GestureDetector(
+                      onTap: () {
+                        controller.clearFilter();
+                      },
+                      child: Container(
+                        width: 160,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: const Color(0xff2B78A3)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                            child: const Text('Xoá tìm kiếm',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Color(0xff2B78A3)))
+                                .paddingSymmetric(vertical: 8)),
+                      ),
                     ),
-                    RequestManagementTable(),
-                  ],
-                ),
-              )
+                ],
+              ),
+              RequestManagementTable(),
             ],
-          )).paddingAll(32);
+          ),
+        )
+      ],
+    ).paddingAll(32);
   }
 }
 

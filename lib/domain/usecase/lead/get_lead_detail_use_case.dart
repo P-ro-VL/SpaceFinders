@@ -12,6 +12,10 @@ class GetLeadDetailUseCase
 
   @override
   Future<Either<FailureEntity, LeadEntity>> call(num params) async {
-    return await repository.getLead(params);
+    final images = await repository.getLeadImages(params);
+    final response = await repository.getLead(params);
+
+    response.right.images = images.right;
+    return response;
   }
 }

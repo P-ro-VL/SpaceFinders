@@ -81,6 +81,7 @@ class CreateLeadLayoutController extends GetxController {
 
   final authenController = Get.find<AuthenticationController>();
 
+  final cachedImages = <Uint8List>[];
   final images = [];
   String legalFile = '';
 
@@ -120,6 +121,7 @@ class CreateLeadLayoutController extends GetxController {
   }
 
   void upload(Uint8List bytes, {String type = 'image'}) async {
+    if (type == 'image') cachedImages.add(bytes);
     final fileName = (Uuid().v4()) + (type == 'image' ? '.png' : '.pdf');
     final response = await uploadFileUseCase
         .call(UploadFileParams(bytes: bytes, fileName: fileName));
@@ -164,10 +166,13 @@ class CreateLeadLayoutController extends GetxController {
       reviewedBy: null,
       isDesired: isNeedRentDemand,
       legalStatus: legalInfo.value,
+      legalProof: legalFile,
       code: LeadCommon.generateLeadCode(
           rentalType: rentType.value,
           propertyType: realEstateType.value,
           isDesired: isNeedRentDemand),
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
     final result = await createLeadUseCase.call(params);
     result.fold((l) {}, (r) async {

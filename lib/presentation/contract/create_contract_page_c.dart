@@ -24,6 +24,8 @@ class CreateContractPageController extends GetxController {
   final uploadFileUseCase =
       UploadFileUseCase(FileRepositoryImpl(FileDataSourceImpl()));
 
+  final isLoading = RxBool(false);
+
   final price = RxString('');
   final deposit = RxString('');
   final propertyCode = RxString('');
@@ -37,10 +39,13 @@ class CreateContractPageController extends GetxController {
   Uint8List? bytes;
 
   Future<void> createContract() async {
+    isLoading.value = true;
     final file = await uploadFileUseCase.call(UploadFileParams(
         bytes: bytes, fileName: '${const UuidV4().generate()}.pdf'));
 
-    final leads = (await getAllLeadUseCase.call(GetAllLeadParams())).right;
+    final leads = (await getAllLeadUseCase
+            .call(GetAllLeadParams(propertyCodeKeyword: propertyCode.value)))
+        .right;
     final lead = leads.firstWhereOrNull((e) => e.code == propertyCode.value);
 
     final authController = Get.find<AuthenticationController>();
@@ -70,5 +75,7 @@ class CreateContractPageController extends GetxController {
 
     await updateLeadUseCase
         .call(UpdateLeadParams(lead?.leadId, status: leadStatus));
+
+    isLoading.value = false;
   }
 }
