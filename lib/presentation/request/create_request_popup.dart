@@ -57,6 +57,7 @@ class CreateRequestPopup extends StatelessWidget with FormMixin {
                 onChanged: (item) => controller.description.value = item),
             buildUploadSection(
                 text: 'Minh chứng đính kèm',
+                isRequired: false,
                 supportedFiles: ['JPEG', 'JPG', 'PNG'],
                 onSelectImage: (bytes) {
                   controller.selectedFile = bytes;

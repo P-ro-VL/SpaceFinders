@@ -21,9 +21,7 @@ class ContractTableDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'code', value: e.code ?? '--'),
               DataGridCell<String>(
                   columnName: 'agent_name', value: e.agentName ?? '--'),
-              DataGridCell<String>(
-                  columnName: 'price',
-                  value: (e.rentalPrice ?? 0).currencyFormat),
+              DataGridCell<num>(columnName: 'price', value: e.rentalPrice ?? 0),
               DataGridCell<String>(
                   columnName: 'type', value: e.rentalType ?? '--'),
               DataGridCell<String>(
@@ -101,7 +99,8 @@ class ContractTableDataSource extends DataGridSource {
         );
       }
       return Container(
-        alignment: Alignment.center,
+        alignment:
+            e.columnName == 'price' ? Alignment.centerRight : Alignment.center,
         padding: const EdgeInsets.all(8.0),
         child: Text(
           e.value.toString(),

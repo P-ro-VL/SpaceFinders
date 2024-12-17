@@ -36,7 +36,7 @@ class _ContractManagementTableState extends State<ContractManagementTable> {
                             padding: const EdgeInsets.all(16.0),
                             alignment: Alignment.center,
                             child: const Text(
-                              'ID',
+                              'STT',
                               textAlign: TextAlign.center,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ))),
@@ -73,7 +73,6 @@ class _ContractManagementTableState extends State<ContractManagementTable> {
                             ))),
                     GridColumn(
                         columnName: 'type',
-                        columnWidthMode: ColumnWidthMode.fill,
                         label: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,

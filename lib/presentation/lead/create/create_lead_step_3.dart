@@ -231,9 +231,9 @@ class CreateLeadStep3 extends StatelessWidget {
                       child: Image.memory(
                         e,
                         errorBuilder: (_, __, ___) => const Icon(
-                          Icons.article,
+                          Icons.picture_as_pdf_outlined,
                           size: 32,
-                          color: Colors.blue,
+                          color: Colors.red,
                         ),
                       ),
                     ))

@@ -28,11 +28,7 @@ class LeadHistoryDataSource extends DataGridSource {
                   columnName: 'address',
                   value:
                       '${(e.street ?? '').isNotEmpty ? '${e.street}, ' : ''} ${e.ward ?? ''}, ${e.district ?? ''}, ${e.city ?? ''}'),
-              DataGridCell<String>(
-                  columnName: 'price',
-                  value: (e.price?.toString() ?? '--') == '-1'
-                      ? 'Thoả thuận'
-                      : (e.price ?? 0).currencyFormat),
+              DataGridCell<num>(columnName: 'price', value: e.price ?? -1),
               DataGridCell<String>(
                   columnName: 'area', value: e.area?.toString() ?? '--'),
               DataGridCell<String>(
@@ -87,6 +83,16 @@ class LeadHistoryDataSource extends DataGridSource {
       if (e.columnName == 'action') {
         return buildAction(e.value);
       }
+      if (e.columnName == 'price') {
+        return Container(
+          alignment: e.value != -1 ? Alignment.centerRight : Alignment.center,
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            e.value != -1 ? (e.value as num).currencyFormat : 'Thoả thuận',
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }
       return Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(8.0),
@@ -131,8 +137,8 @@ class LeadHistoryDataSource extends DataGridSource {
                 ));
       },
       child: const Icon(
-        Icons.edit_document,
-        color: Colors.blue,
+        Icons.remove_red_eye_outlined,
+        color: Colors.black,
         size: 16,
       ),
     );

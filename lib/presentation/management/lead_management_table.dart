@@ -172,7 +172,7 @@ class _LeadManagementTableState extends State<LeadManagementTable>
                             ))),
                     GridColumn(
                         columnName: 'price',
-                        columnWidthMode: ColumnWidthMode.auto,
+                        columnWidthMode: ColumnWidthMode.fill,
                         label: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,

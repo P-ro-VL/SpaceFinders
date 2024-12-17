@@ -29,9 +29,9 @@ class SelectedImageWidget extends StatelessWidget {
             height: 64,
             child: name.endsWith('.pdf')
                 ? const Icon(
-                    Icons.article,
+                    Icons.picture_as_pdf_outlined,
                     size: 32,
-                    color: Colors.blue,
+                    color: Colors.red,
                   )
                 : Image.memory(path),
           ),

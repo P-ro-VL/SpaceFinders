@@ -5,8 +5,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:spacefinder/auth/authentication_c.dart';
+import 'package:spacefinder/data/datasource/lead_data_source.dart';
+import 'package:spacefinder/data/repository/lead_repository_impl.dart';
 import 'package:spacefinder/domain/entity/lead_entity.dart';
+import 'package:spacefinder/domain/usecase/lead/delete_lead_use_case.dart';
 import 'package:spacefinder/presentation/contract/create_contract_page.dart';
+import 'package:spacefinder/presentation/home/home_page.dart';
+import 'package:spacefinder/presentation/management/lead_management.dart';
 import 'package:spacefinder/presentation/management/lead_management_c.dart';
 import 'package:spacefinder/routes.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -28,13 +33,8 @@ class LeadTableDataSource extends DataGridSource {
                   columnName: 'address',
                   value:
                       '${(e.street ?? '').isNotEmpty ? '${e.street}, ' : ''} ${e.ward ?? ''}, ${e.district ?? ''}, ${e.city ?? ''}'),
-              DataGridCell<String>(
-                  columnName: 'price',
-                  value: (e.price?.toString() ?? '--') == '-1'
-                      ? 'Thoả thuận'
-                      : e.price?.currencyFormat),
-              DataGridCell<String>(
-                  columnName: 'area', value: e.area?.toString() ?? '--'),
+              DataGridCell<num>(columnName: 'price', value: e.price ?? -1),
+              DataGridCell<num>(columnName: 'area', value: e.area ?? -1),
               DataGridCell<dynamic>(
                   columnName: 'createdAt',
                   value: (e.createdAt as num? ?? -1).ddMMyyyyFormat ?? '--'),
@@ -107,6 +107,27 @@ class LeadTableDataSource extends DataGridSource {
             style: const TextStyle(color: Colors.green),
           ));
         }
+      }
+
+      if (e.columnName == 'price') {
+        return Container(
+          alignment: e.value != -1 ? Alignment.centerRight : Alignment.center,
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            e.value != -1 ? (e.value as num).currencyFormat : 'Thoả thuận',
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }
+      if (e.columnName == 'area') {
+        return Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            e.value != -1 ? e.value.toString() : '--',
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
       }
 
       return Container(
@@ -237,14 +258,16 @@ class LeadTableDataSource extends DataGridSource {
         if (user.role == 'ADMIN') ...{
           const SizedBox(width: 8),
           GestureDetector(
-            onTap: () {
-              showDialog(
-                  context: Get.context!,
-                  builder: (context) => AlertDialog(
-                        contentPadding: EdgeInsets.zero,
-                        content: DetailLeadManagementPopup(
-                            lead: leadEntity, isEdit: true),
-                      ));
+            onTap: () async {
+              final deleteLeadUseCase =
+                  DeleteLeadUseCase(LeadRepositoryImpl(LeadDataSourceImpl()));
+              await deleteLeadUseCase.call(leadEntity.leadId ?? -1);
+
+              Routes.goTo(const HomePage());
+              Future.delayed(const Duration(milliseconds: 500), () {
+                Routes.goTo(LeadManagementPage(
+                    isDemand: leadEntity.isDesired ?? false));
+              });
             },
             child: const Tooltip(
               message: 'Xoá tin đăng',

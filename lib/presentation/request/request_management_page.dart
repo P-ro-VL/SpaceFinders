@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:spacefinder/presentation/common/form_mixin.dart';
 import 'package:spacefinder/presentation/request/request_management_page_c.dart';
 
-import '../../l10n/app_l18.dart';
 import 'request_management_table.dart';
 
 class RequestManagementPage extends StatefulWidget {

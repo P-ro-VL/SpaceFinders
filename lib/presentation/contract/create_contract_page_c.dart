@@ -70,7 +70,7 @@ class CreateContractPageController extends GetxController {
         : 'APPROVED';
     if (DateTime.now()
         .isAfter(endDate.value ?? DateTime.fromMillisecondsSinceEpoch(0))) {
-      leadStatus = 'CANCELLED';
+      leadStatus = 'CLOSED';
     }
 
     await updateLeadUseCase

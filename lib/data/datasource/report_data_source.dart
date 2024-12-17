@@ -169,18 +169,65 @@ class ReportDataSourceImpl extends ReportDataSource {
   }
 
   @override
-  Future<bool> getAllContracts() async {
-    final data = await client.from('contracts').select();
-    await _writeToExcel(data, 'Danh sách hợp đồng');
+  Future<bool> getAllContracts({
+    String? status,
+    String? propertyType,
+    String? rentalType,
+  }) async {
+    dynamic data = client.from('contracts').select();
+
+    if (status != null && status != 'All') {
+      data = data.eq('status', status);
+    }
+
+    await _writeToExcel(await data, 'Danh sách hợp đồng');
     return true;
   }
 
   @override
-  Future<bool> getAllLeads(bool isDesired) async {
-    final data =
-        await client.from('lead_listings').select().eq('is_desired', isDesired);
+  Future<bool> getAllLeads(
+    bool isDesired, {
+    String? leadStatus,
+    String? propertyType,
+    String? rentalType,
+    num? priceStart,
+    num? priceEnd,
+    num? areaStart,
+    num? areaEnd,
+  }) async {
+    PostgrestFilterBuilder data =
+        client.from('lead_listings').select().eq('is_desired', isDesired);
+
+    if (leadStatus != null && leadStatus != 'All') {
+      data = data.eq('status', leadStatus);
+    }
+
+    if (propertyType != null && propertyType != 'All') {
+      data = data.eq('property_type', propertyType);
+    }
+
+    if (rentalType != null && rentalType != 'All') {
+      data = data.eq('rental_type', rentalType);
+    }
+
+    if (priceStart != null) {
+      data = data.gte('price', priceStart);
+    }
+
+    if (priceEnd != null) {
+      data = data.lte('price', priceEnd);
+    }
+
+    if (areaStart != null) {
+      data = data.gte('area', areaStart);
+    }
+
+    if (areaEnd != null) {
+      data = data.lte('area', areaEnd);
+    }
+
     await _writeToExcel(
-        data,
+        await data,
         !isDesired
             ? 'Danh sách tin đăng cho thuê'
             : 'Danh sách tin đăng muốn thuê');
@@ -188,9 +235,22 @@ class ReportDataSourceImpl extends ReportDataSource {
   }
 
   @override
-  Future<bool> getAllRequests() async {
-    final data = await client.from('requests');
-    await _writeToExcel(data, 'Danh sách yêu cầu sau duyệt');
+  Future<bool> getAllRequests({
+    String? status,
+    String? leadType,
+    String? type,
+  }) async {
+    dynamic data = client.from('requests');
+
+    if (status != null && status != 'All') {
+      data = data.eq('status', status);
+    }
+
+    if (type != null && type != 'All') {
+      data = data.eq('request_type', type);
+    }
+
+    await _writeToExcel(await data, 'Danh sách yêu cầu sau duyệt');
     return true;
   }
 }
